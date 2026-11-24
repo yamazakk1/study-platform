@@ -1,1 +1,35 @@
+# MacOS
+.DS_Store
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Code coverage and test artifacts
+*.out
+coverage.html
+coverage.txt
+coverage.xml
+*.coverprofile
+profile.cov
+
+# Go workspace files
+go.work
+go.work.sum
 .gocache/
+
+# Environment files
+.env
+
+# Optional: Custom build output folder (uncomment if used)
+# bin/
+# dist/
+
+# Optional: Dependency directory (uncomment if not vendoring)
+# vendor/
