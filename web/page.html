@@ -243,7 +243,9 @@
           <section class="form-card">
             {{if eq .Kind "student"}}
               <form method="post" action="/students/form">
-                <input type="hidden" name="id" value="{{.Student.ID}}">
+                {{if .Editing}}
+                  <input type="hidden" name="id" value="{{.Student.ID}}">
+                {{end}}
                 <label>
                   Фамилия
                   <input name="surname" value="{{.Student.Surname}}" required>
@@ -285,7 +287,9 @@
 
             {{if eq .Kind "curriculum"}}
               <form method="post" action="/curricula/form">
-                <input type="hidden" name="id" value="{{.Curriculum.ID}}">
+                {{if .Editing}}
+                  <input type="hidden" name="id" value="{{.Curriculum.ID}}">
+                {{end}}
                 <label>
                   Название специальности
                   <input name="specialty_name" value="{{.Curriculum.SpecialtyName}}" required>
@@ -296,7 +300,9 @@
 
             {{if eq .Kind "subject"}}
               <form method="post" action="/subjects/form">
-                <input type="hidden" name="id" value="{{.Subject.ID}}">
+                {{if .Editing}}
+                  <input type="hidden" name="id" value="{{.Subject.ID}}">
+                {{end}}
                 <label>
                   Название дисциплины
                   <input name="name" value="{{.Subject.Name}}" required>
@@ -364,7 +370,9 @@
 
             {{if eq .Kind "grade"}}
               <form method="post" action="/grades/form">
-                <input type="hidden" name="id" value="{{.Grade.ID}}">
+                {{if .Editing}}
+                  <input type="hidden" name="id" value="{{.Grade.ID}}">
+                {{end}}
                 <label>
                   Учебный год
                   <input

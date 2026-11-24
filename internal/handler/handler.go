@@ -379,7 +379,8 @@ func (h *Handler) formError(w http.ResponseWriter, r *http.Request, p page, err 
 	var pqErr *pq.Error
 	if errors.Is(err, service.ErrInvalid) {
 		p.Error = err.Error()
-	} else if errors.As(err, &pqErr) && (string(pqErr.Code) == "23505" || string(pqErr.Code) == "23503" || string(pqErr.Code) == "23514") {
+	} else if errors.Is(err, repository.ErrConstraint) ||
+		(errors.As(err, &pqErr) && (string(pqErr.Code) == "23505" || string(pqErr.Code) == "23503" || string(pqErr.Code) == "23514")) {
 		p.Error = "Запись уже существует или выбраны неверные связанные данные"
 	} else {
 		h.failure(w, err)

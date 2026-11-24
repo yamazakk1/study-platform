@@ -23,5 +23,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
+        required: false
 volumes:
   postgres_data:
