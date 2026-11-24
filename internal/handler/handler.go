@@ -1,4 +1,4 @@
-﻿package handler
+package handler
 
 import (
 	"database/sql"
@@ -66,13 +66,28 @@ func New(s *service.Service) (*Handler, error) {
 			}
 		},
 		"curriculumName": func(list []domain.Curriculum, id int64) string {
-			for _, v := range list { if v.ID == id { return v.SpecialtyName } }; return strconv.FormatInt(id, 10)
+			for _, v := range list {
+				if v.ID == id {
+					return v.SpecialtyName
+				}
+			}
+			return strconv.FormatInt(id, 10)
 		},
 		"subjectName": func(list []domain.Subject, id int64) string {
-			for _, v := range list { if v.ID == id { return v.Name } }; return strconv.FormatInt(id, 10)
+			for _, v := range list {
+				if v.ID == id {
+					return v.Name
+				}
+			}
+			return strconv.FormatInt(id, 10)
 		},
 		"studentName": func(list []domain.Student, id int64) string {
-			for _, v := range list { if v.ID == id { return v.Surname + " " + v.Name } }; return strconv.FormatInt(id, 10)
+			for _, v := range list {
+				if v.ID == id {
+					return v.Surname + " " + v.Name
+				}
+			}
+			return strconv.FormatInt(id, 10)
 		},
 	}
 	t, err := template.New("page").Funcs(funcs).ParseGlob("web/*.html")
@@ -97,6 +112,7 @@ func (h *Handler) Routes() http.Handler {
 	mux.Handle("GET /style.css", http.FileServer(http.Dir("web")))
 	return mux
 }
+
 func (h *Handler) render(w http.ResponseWriter, p page, status int) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(status)
@@ -126,7 +142,6 @@ func id(v string) (int64, error) {
 
 func number(v string) int { n, _ := strconv.Atoi(v); return n }
 
-
 func (h *Handler) lists(r *http.Request, p *page) error {
 	var err error
 	if p.Students, err = h.service.Students(r.Context()); err != nil {
@@ -146,6 +161,7 @@ func (h *Handler) lists(r *http.Request, p *page) error {
 	}
 	return nil
 }
+
 func (h *Handler) home(w http.ResponseWriter, r *http.Request) {
 	p := page{Kind: "home", Title: "Учёт успеваемости", Form: domain.StudyForm(r.URL.Query().Get("form"))}
 	if err := h.lists(r, &p); err != nil {
@@ -175,6 +191,7 @@ func (h *Handler) home(w http.ResponseWriter, r *http.Request) {
 	}
 	h.render(w, p, 200)
 }
+
 func (h *Handler) studentForm(w http.ResponseWriter, r *http.Request) {
 	p := page{Kind: "student", Title: "Студент", Student: domain.Student{StudyForm: domain.DayStudyForm}}
 	v, err := id(r.URL.Query().Get("id"))
@@ -192,6 +209,7 @@ func (h *Handler) studentForm(w http.ResponseWriter, r *http.Request) {
 	}
 	h.render(w, p, 200)
 }
+
 func (h *Handler) saveStudent(w http.ResponseWriter, r *http.Request) {
 	v, err := id(r.FormValue("id"))
 	if err != nil {
@@ -205,6 +223,7 @@ func (h *Handler) saveStudent(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
+
 func (h *Handler) curriculumForm(w http.ResponseWriter, r *http.Request) {
 	p := page{Kind: "curriculum", Title: "Учебный план"}
 	v, err := id(r.URL.Query().Get("id"))
@@ -222,6 +241,7 @@ func (h *Handler) curriculumForm(w http.ResponseWriter, r *http.Request) {
 	}
 	h.render(w, p, 200)
 }
+
 func (h *Handler) saveCurriculum(w http.ResponseWriter, r *http.Request) {
 	v, err := id(r.FormValue("id"))
 	if err != nil {
@@ -235,6 +255,7 @@ func (h *Handler) saveCurriculum(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Redirect(w, r, "/", 303)
 }
+
 func (h *Handler) subjectForm(w http.ResponseWriter, r *http.Request) {
 	p := page{Kind: "subject", Title: "Дисциплина"}
 	v, err := id(r.URL.Query().Get("id"))
@@ -252,6 +273,7 @@ func (h *Handler) subjectForm(w http.ResponseWriter, r *http.Request) {
 	}
 	h.render(w, p, 200)
 }
+
 func (h *Handler) saveSubject(w http.ResponseWriter, r *http.Request) {
 	v, err := id(r.FormValue("id"))
 	if err != nil {
@@ -265,6 +287,7 @@ func (h *Handler) saveSubject(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Redirect(w, r, "/", 303)
 }
+
 func (h *Handler) planForm(w http.ResponseWriter, r *http.Request) {
 	p := page{Kind: "plan", Title: "Дисциплина в плане", Item: domain.CurriculumSubject{ControlForm: domain.ExamControlForm}}
 	if err := h.lists(r, &p); err != nil {
@@ -288,6 +311,7 @@ func (h *Handler) planForm(w http.ResponseWriter, r *http.Request) {
 	}
 	h.render(w, p, 200)
 }
+
 func (h *Handler) savePlan(w http.ResponseWriter, r *http.Request) {
 	c, e1 := id(r.FormValue("curriculum_id"))
 	s, e2 := id(r.FormValue("subject_id"))
@@ -312,6 +336,7 @@ func (h *Handler) savePlan(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Redirect(w, r, "/", 303)
 }
+
 func (h *Handler) gradeForm(w http.ResponseWriter, r *http.Request) {
 	p := page{Kind: "grade", Title: "Оценка", Grade: domain.Grade{Value: domain.FiveGradeValue}}
 	if err := h.lists(r, &p); err != nil {
@@ -333,6 +358,7 @@ func (h *Handler) gradeForm(w http.ResponseWriter, r *http.Request) {
 	}
 	h.render(w, p, 200)
 }
+
 func (h *Handler) saveGrade(w http.ResponseWriter, r *http.Request) {
 	v, e1 := id(r.FormValue("id"))
 	student, e2 := id(r.FormValue("student_id"))
@@ -367,4 +393,3 @@ func (h *Handler) formError(w http.ResponseWriter, r *http.Request, p page, err 
 	}
 	h.render(w, p, 400)
 }
-

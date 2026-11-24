@@ -29,6 +29,7 @@ type Store interface {
 	CountStudents(context.Context, domain.StudyForm) (int64, error)
 	SubjectLoad(context.Context, int64) ([]repository.Load, error)
 }
+
 type Service struct{ Store }
 
 func New(store Store) *Service { return &Service{Store: store} }
